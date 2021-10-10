@@ -2,7 +2,8 @@ import discord
 import os
 import random
 import re
-import brickbot_arg
+import json
+#import brickbot_arg
 
 from dotenv import load_dotenv
 
@@ -12,9 +13,9 @@ from dotenv import load_dotenv
 # dotenv variable grabbing
 load_dotenv()
 token = os.getenv("discord_token")
-excluded_channel = int(os.getenv("excluded_channel"))
-commands_channel = int(os.getenv("commands_channel"))
-promoted_channel = int(os.getenv("promoted_channel"))
+excluded_channels = json.loads(os.getenv("excluded_channels"))
+commands_channels = json.loads(os.getenv("commands_channels"))
+promoted_channels = json.loads(os.getenv("promoted_channels"))
 
 
 #Discord client connection
@@ -67,11 +68,11 @@ async def on_message(message):
         return
     
     #Don't interact with excluded channels
-    if message.channel.id == excluded_channel:
+    if message.channel.id in excluded_channels:
         return
     
     #The commands channel in brickbot's server
-    if message.channel.id == commands_channel:
+    if message.channel.id in commands_channels:
     
         #Return list of channels that brickbot is in
         if message.content.lower() == "!channels":
@@ -209,7 +210,7 @@ async def on_message(message):
         print("No fun reacted in channel " + str(message.channel))
     
         #React to pub messages from promoted channels with :brick_beer:
-    elif message.channel.id == promoted_channel:
+    elif message.channel.id in promoted_channels:
         if "pub" in message.content.lower():
             await message.channel.send(client.brick_beer)
             await message.add_reaction(client.brick_beer)

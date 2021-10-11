@@ -129,6 +129,10 @@ async def on_message(message):
         elif message.content.lower() == "!dmme":
             await message.author.send("Hi!")
         
+        elif message.content.lower() == "!quit":
+            await ctx.bot.logout()
+            exit()
+        
         #No known command
         else:
             await message.channel.send("Command failed")
